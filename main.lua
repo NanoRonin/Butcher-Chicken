@@ -1,23 +1,15 @@
 require('functions')
 
 function love.load()
-    state = "playing"
-    spawnTimer = 0
-    player = {}
-
-    player.width = 100
-    player.height = 100
-    player.x = love.graphics.getWidth()/2 - player.width/2
-    player.y = love.graphics.getHeight()/2
-    player.speed = 200
-    player.sprite = love.graphics.newImage('sprites/chick.png')
-
-    enemies = {}
+    defaultFont = love.graphics.getFont()
+    deadFont = love.graphics.newFont(40)
+    resetGame()
 end
 
 function love.update(dt)
     if state == "playing" then
         spawnTimer = spawnTimer + dt
+        player.Sprite = love.graphics.newImage('sprites/chick.png')
 
         if spawnTimer >= 2 then
             addEnemy()
@@ -43,7 +35,7 @@ function love.update(dt)
         end
 
         if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
-            if player.x - player.width < love.graphics.getHeight() then
+            if player.x + player.width < love.graphics.getWidth() then
                 player.x = player.x + player.speed * dt
             end
         end
@@ -61,25 +53,41 @@ function love.update(dt)
                 player.y + player.height/2,
                 v.x + v.width/2,
                 v.y + v.height/2
-            ) < 40 then
+            ) < 80 then
                 table.remove(enemies, i)
                 state = "dead"
-            end
-
-            if not state == "playing" then
-                table.remove(enemies, i)
+                player.sprite = love.graphics.newImage('sprites/meatChop.png')
             end
         end
     end
-    
+
+    if state == "dead" then
+        player.Sprite = love.graphics.newImage('sprites/meatChop.png')
+    end    
+end
+
+function love.keypressed(key)
+    if state == "dead" and (key == "space" or key == "return") then
+        resetGame()
+    end
 end
 
 function love.draw()
     love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
-    love.graphics.circle("line", player.x + player.width/2, player.y + player.height/2, 40)
+    --love.graphics.circle("line", player.x + player.width/2, player.y + player.height/2, 40)
     
     for i,v in ipairs(enemies) do
         love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
+        --love.graphics.rectangle("line", v.x , v.y, 100, 100)
+    end
 
+    if state == "dead" then
+        player.sprite = love.graphics.newImage('sprites/meatChop.png')
+        love.graphics.setFont(deadFont)
+        local text = "pranay is a camel"
+        local x = love.graphics.getWidth() / 2 - deadFont:getWidth(text) / 2
+        local y = love.graphics.getHeight() / 2 - deadFont:getHeight() / 2
+        love.graphics.print(text, x, y)
+        love.graphics.setFont(defaultFont)
     end
 end
