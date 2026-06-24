@@ -1,8 +1,11 @@
 require('functions')
 
 function love.load()
+    background = love.graphics.newImage('sprites/grassBackground.png')
     defaultFont = love.graphics.getFont()
     deadFont = love.graphics.newFont(40)
+    love.window.setFullscreen(true)
+    love.window.setTitle("Pranay likes ducks")
     resetGame()
 end
 
@@ -45,6 +48,7 @@ function love.update(dt)
             v.y = v.y + v.speed * dt
 
             if v.y > love.graphics.getHeight() then
+                score = score + 1
                 table.remove(enemies, i)
             end
 
@@ -66,13 +70,8 @@ function love.update(dt)
     end    
 end
 
-function love.keypressed(key)
-    if state == "dead" and (key == "space" or key == "return") then
-        resetGame()
-    end
-end
-
 function love.draw()
+    love.graphics.draw(background, 0, 0, 0, 5, 5)
     love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
     --love.graphics.circle("line", player.x + player.width/2, player.y + player.height/2, 40)
     
@@ -80,6 +79,12 @@ function love.draw()
         love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
         --love.graphics.rectangle("line", v.x , v.y, 100, 100)
     end
+
+    local scoreText = "Assassination attempts survived: " .. score
+    local scoreX = love.graphics.getWidth() / 2 - deadFont:getWidth(scoreText) / 2
+    love.graphics.setFont(deadFont)
+    love.graphics.print(scoreText, scoreX, 10)
+    love.graphics.setFont(defaultFont)
 
     if state == "dead" then
         player.sprite = love.graphics.newImage('sprites/meatChop.png')

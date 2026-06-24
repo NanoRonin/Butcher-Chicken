@@ -1,4 +1,5 @@
 function resetGame()
+    score = 0
     state = "playing"
     spawnTimer = 0
     local playerSprite = love.graphics.newImage('sprites/chick.png')
@@ -38,3 +39,8 @@ function addEnemy()
     table.insert(enemies, enemy)
 end
 
+function love.keypressed(key)
+    if state == "dead" and (key == "space" or key == "return") then
+        resetGame()
+    end
+end
