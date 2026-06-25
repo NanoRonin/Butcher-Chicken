@@ -1,12 +1,12 @@
-if os.getenv("LOVE2D_TOOLS") then pcall(require, "_love2d_tools_bridge") end
 require('functions')
 
 function love.load()
     background = love.graphics.newImage('sprites/grassBackground.png')
     defaultFont = love.graphics.getFont()
     deadFont = love.graphics.newFont(40)
-    love.window.setFullscreen(true)
+    love.window.setFullscreen(false)
     love.window.setTitle("chicken and the butcher")
+    timer = 0.25
     resetGame()
 end
 
@@ -16,9 +16,10 @@ function love.update(dt)
         spawnTimer = spawnTimer + dt
         player.Sprite = love.graphics.newImage('sprites/chick.png')
 
-        if spawnTimer >= 0.25 then
+        if spawnTimer >= timer then
             addEnemy()
             spawnTimer = 0
+            timer = timer - 0.0001
         end
 
         if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
@@ -54,32 +55,23 @@ function love.update(dt)
                 table.remove(enemies, i)
             end
 
-            if distance(
-                player.x + player.width/2,
-                player.y + player.height/2,
-                v.x + v.width/2,
-                v.y + v.height/2
-            ) < 80 then
+            if checkCollision(player.x + 20, player.y + 20, 60, 60, v.x + 5, v.y + 5, 75, 75) then
                 table.remove(enemies, i)
                 state = "dead"
                 player.sprite = love.graphics.newImage('sprites/meatChop.png')
             end
         end
     end
-
-    if state == "dead" then
-        player.Sprite = love.graphics.newImage('sprites/meatChop.png')
-    end    
 end
 
 function love.draw()
     love.graphics.draw(background, 0, 0, 0, 5, 5)
     love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
-    love.graphics.circle("line", player.x + player.width/2, player.y + player.height/2, 40)
+    love.graphics.rectangle("line", player.x + 20, player.y + 20, 60, 60)
     
     for i,v in ipairs(enemies) do
         love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
-        love.graphics.rectangle("line", v.x , v.y, 100, 100)
+        love.graphics.rectangle("line", v.x + 5, v.y + 5, 75, 75)
     end
 
     if state == "playing" then
@@ -102,12 +94,12 @@ function love.draw()
         local text = "You survived " .. score .. " assassination attempts"
         local x = love.graphics.getWidth() / 2 - deadFont:getWidth(text) / 2
         local y = love.graphics.getHeight() / 2 - deadFont:getHeight() / 2
-        love.graphics.print(text, x, y)
+        love.graphics.print(text, x - 50, y)
 
         text = "Space to replay"
         local x = love.graphics.getWidth() / 2 - deadFont:getWidth(text)/2
         local y = love.graphics.getHeight() / 2 - deadFont:getHeight()/2
-        love.graphics.print(text, x, y + 100)
+        love.graphics.print(text, x, y + 50)
 
         love.graphics.setFont(defaultFont)
     end
