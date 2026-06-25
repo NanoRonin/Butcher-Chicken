@@ -2,12 +2,20 @@ require('functions')
 
 function love.load()
     background = love.graphics.newImage('sprites/grassBackground.png')
+    icon = love.graphics.newImage('sprites/chick.png')
+
     defaultFont = love.graphics.getFont()
     deadFont = love.graphics.newFont(40)
-    love.window.setFullscreen(true)
+
+    love.window.setFullscreen(false)
     love.window.setTitle("chicken and the butcher")
+    love.window.setIcon(love.image.newImageData('sprites/chick.png'))
+
     timer = 0.25
+
     resetGame()
+
+    state = "menu"
 end
 
 function love.update(dt)
@@ -58,32 +66,31 @@ function love.update(dt)
             if checkCollision(player.x + 20, player.y + 20, 60, 60, v.x + 5, v.y + 5, 75, 75) then
                 table.remove(enemies, i)
                 state = "dead"
-                player.sprite = love.graphics.newImage('sprites/meatChop.png')
             end
         end
     end
 end
 
 function love.draw()
-    love.graphics.draw(background, 0, 0, 0, 5, 5)
-    love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
-
-    if hitboxes then love.graphics.rectangle("line", player.x + 20, player.y + 20, 60, 60) end   
-    
-    for i,v in ipairs(enemies) do
-        love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
-        if hitboxes then love.graphics.rectangle("line", v.x + 5, v.y + 5, 75, 75) end
-    end
-
     if state == "playing" then
+        love.graphics.draw(background, 0, 0, 0, 5, 5)
+        love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
+
+        if hitboxes then love.graphics.rectangle("line", player.x + 20, player.y + 20, 60, 60) end   
+
+        for i,v in ipairs(enemies) do
+            love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
+            if hitboxes then love.graphics.rectangle("line", v.x + 5, v.y + 5, 75, 75) end
+        end
+
         local scoreText = "Assassination attempts survived: " .. score
         local scoreX = love.graphics.getWidth() / 2 - deadFont:getWidth(scoreText)/2
         love.graphics.setFont(deadFont)
         love.graphics.print(scoreText, scoreX, 10)
         love.graphics.setFont(defaultFont)
     end
-    
 
+    love.graphics.setColor(1, 1, 1)
     local fpsText = "FPS: " .. love.timer.getFPS()
     local fpsX = love.graphics.getWidth() - defaultFont:getWidth(fpsText) - 10
     love.graphics.print(fpsText, fpsX, 10)
@@ -97,11 +104,51 @@ function love.draw()
         local y = love.graphics.getHeight() / 2 - deadFont:getHeight() / 2
         love.graphics.print(text, x - 50, y)
 
-        text = "Space to replay"
-        local x = love.graphics.getWidth() / 2 - deadFont:getWidth(text)/2
-        local y = love.graphics.getHeight() / 2 - deadFont:getHeight()/2
-        love.graphics.print(text, x, y + 50)
+        --text = "Space to replay"
+        --local x = love.graphics.getWidth() / 2 - deadFont:getWidth(text)/2
+        --local y = love.graphics.getHeight() / 2 - deadFont:getHeight()/2
+        --love.graphics.print(text, x, y + 50)
 
         love.graphics.setFont(defaultFont)
+
+        local buttonText = "menu"
+        buttonW = deadFont:getWidth(buttonText) + 40
+        buttonH = deadFont:getHeight() + 24
+        buttonX = love.graphics.getWidth() / 2 - buttonW / 2
+        buttonY = love.graphics.getHeight() - 100
+
+        love.graphics.setColor(74/255, 78/255, 105/255)
+        love.graphics.rectangle("fill", buttonX, buttonY, buttonW, buttonH, 16, 16)
+
+        love.graphics.setColor(34/255, 34/255, 59/255)
+        love.graphics.setLineWidth(4)
+        love.graphics.rectangle("line", buttonX, buttonY, buttonW, buttonH, 16, 16)
+
+        love.graphics.setFont(deadFont)
+        love.graphics.print(buttonText, buttonX + (buttonW - deadFont:getWidth(buttonText))/2, buttonY + (buttonH - deadFont:getHeight())/2)
+        love.graphics.setFont(defaultFont)
+        love.graphics.setLineWidth(1)
+        love.graphics.setColor(1, 1, 1)
+    end
+
+    if state == "menu" then
+        local buttonText = "Play"
+        buttonW = deadFont:getWidth(buttonText) + 40
+        buttonH = deadFont:getHeight() + 24
+        buttonX = love.graphics.getWidth() / 2 - buttonW / 2
+        buttonY = love.graphics.getHeight() - 100
+
+        love.graphics.setColor(74/255, 78/255, 105/255)
+        love.graphics.rectangle("fill", buttonX, buttonY, buttonW, buttonH, 16, 16)
+
+        love.graphics.setColor(34/255, 34/255, 59/255)
+        love.graphics.setLineWidth(4)
+        love.graphics.rectangle("line", buttonX, buttonY, buttonW, buttonH, 16, 16)
+
+        love.graphics.setFont(deadFont)
+        love.graphics.print(buttonText, buttonX + (buttonW - deadFont:getWidth(buttonText))/2, buttonY + (buttonH - deadFont:getHeight())/2)
+        love.graphics.setFont(defaultFont)
+        love.graphics.setLineWidth(1)
+        love.graphics.setColor(1, 1, 1)
     end
 end

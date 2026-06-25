@@ -43,9 +43,11 @@ function addEnemy()
 end
 
 function love.keypressed(key)
+    --[[
     if state == "dead" and (key == "space" or key == "return") then
         resetGame()
     end
+    ]]
 
     if state == "playing" and key == "e" then
         if hitboxes then
@@ -61,4 +63,17 @@ function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2)
         x2 < x1 + w1 and
         y1 < y2 + h2 and
         y2 < y1 + h1
+end
+
+function love.mousepressed(x, y, button, istouch, presses)
+    if button == 1 then
+        if checkCollision(x, y, 5, 5, buttonX, buttonY, buttonW, buttonH) then
+            if state == "menu" then
+                state = "playing"
+                resetGame()
+            elseif state == "dead" then
+                state = "menu"
+            end
+        end
+    end
 end
