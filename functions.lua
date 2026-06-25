@@ -14,7 +14,10 @@ function resetGame()
         speed = 200,
         scale = playerScale,
     }
+
     enemies = {}
+
+    hitboxes = false
 end
 
 function distance(x1, y1, x2, y2)
@@ -42,6 +45,14 @@ end
 function love.keypressed(key)
     if state == "dead" and (key == "space" or key == "return") then
         resetGame()
+    end
+
+    if state == "playing" and key == "e" then
+        if hitboxes then
+            hitboxes = false
+        else
+            hitboxes = true
+        end
     end
 end
 

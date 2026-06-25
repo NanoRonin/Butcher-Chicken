@@ -4,7 +4,7 @@ function love.load()
     background = love.graphics.newImage('sprites/grassBackground.png')
     defaultFont = love.graphics.getFont()
     deadFont = love.graphics.newFont(40)
-    love.window.setFullscreen(false)
+    love.window.setFullscreen(true)
     love.window.setTitle("chicken and the butcher")
     timer = 0.25
     resetGame()
@@ -67,11 +67,12 @@ end
 function love.draw()
     love.graphics.draw(background, 0, 0, 0, 5, 5)
     love.graphics.draw(player.sprite, player.x, player.y, 0, 0.2, 0.2)
-    love.graphics.rectangle("line", player.x + 20, player.y + 20, 60, 60)
+
+    if hitboxes then love.graphics.rectangle("line", player.x + 20, player.y + 20, 60, 60) end   
     
     for i,v in ipairs(enemies) do
         love.graphics.draw(v.sprite, v.x, v.y, 0, 0.2, 0.2)
-        love.graphics.rectangle("line", v.x + 5, v.y + 5, 75, 75)
+        if hitboxes then love.graphics.rectangle("line", v.x + 5, v.y + 5, 75, 75) end
     end
 
     if state == "playing" then
