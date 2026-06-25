@@ -77,3 +77,31 @@ function love.mousepressed(x, y, button, istouch, presses)
         end
     end
 end
+
+function loadSave()
+    if love.filesystem.getInfo('save.dat') then
+        local contents = love.filesystem.read('save.dat')
+        if contents then
+            local loadedHighScore, loadedCoins = contents:match('(%d+)%s*(%d+)')
+            highScore = tonumber(loadedHighScore) or 0
+            coins = tonumber(loadedCoins) or 0
+            return
+        end
+    end
+
+    highScore = 0
+    coins = 0
+    saveData()
+end
+
+function saveData()
+    love.filesystem.write('save.dat', tostring(highScore) .. '\n' .. tostring(coins))
+end
+
+function addScoreToCoins()
+    coins = (coins or 0) + score
+    if score > highScore then
+        highScore = score
+    end
+    saveData()
+end
