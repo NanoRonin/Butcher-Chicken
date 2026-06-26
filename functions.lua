@@ -82,7 +82,7 @@ function loadSave()
     if love.filesystem.getInfo('save.dat') then
         local contents = love.filesystem.read('save.dat')
         if contents then
-            local loadedHighScore, loadedCoins = contents:match('(%d+)%s*(%d+)')
+            local loadedH   ighScore, loadedCoins = contents:match('(%d+)%s*(%d+)')
             highScore = tonumber(loadedHighScore) or 0
             coins = tonumber(loadedCoins) or 0
             return
